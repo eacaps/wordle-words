@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun run src/fiveforks.ts data/fiveforks-20240309.txt"
+    "build": "bun run src/fiveforks.ts data/fiveforks-20240411.txt"
   },
   "dependencies": {},
   "module": "index.ts",
