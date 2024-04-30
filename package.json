@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun run src/fiveforks.ts data/fiveforks-20240411.txt"
+    "build": "bun run src/fiveforks.ts data/fiveforks-20240430.txt",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "gh-pages": "^6.1.1"
+  },
   "module": "index.ts",
   "devDependencies": {
     "@types/bun": "latest"
