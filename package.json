@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun run src/fiveforks.ts data/fiveforks-20240411.txt"
+    "build": "bun run bin/update-words.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "node-html-parser": "^6.1.13"
+  },
   "module": "index.ts",
   "devDependencies": {
     "@types/bun": "latest"
