@@ -4,9 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun run bin/update-words.ts"
+    "build": "bun run bin/update-words.ts",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "gh-pages": "^6.1.1",
     "node-html-parser": "^6.1.13"
   },
   "module": "index.ts",
