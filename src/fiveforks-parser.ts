@@ -11,13 +11,9 @@ export const getWords = (document: HTMLElement) => {
     const words:string[] = [];
     const block = document.querySelector('.entry-content > div');
     if(!block || !block.childNodes) return words;
-    let first = true;
     for(const element of block.childNodes) {
         if(element.textContent && element.textContent.trim()) {
-            if(!first) {
-                words.push(...element.textContent.trim().split(" ")/*.filter(word => word != '\n')*/)
-            }
-            first = false;
+            words.push(...element.textContent.trim().split(" ").filter( word => !!word))
         }
     }
     return words;
