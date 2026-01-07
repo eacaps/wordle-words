@@ -1,14 +1,7 @@
-import { getData } from "../src/fiveforks-parser";
-import fs from "fs";
+import { getUpdate } from "../src/word-fetcher";
 
 const main = async () => {
-    const words = await getData();
-    console.log(words);
-    const lastUpdated = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().substring(0,10);
-    const result = {
-        words,
-        lastUpdated
-    };
+    const result = await getUpdate();
     write_file(result);
 }
 
