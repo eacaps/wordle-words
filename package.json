@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun run bin/update-words.ts",
-    "predeploy": "npm run build",
+    "exec:print": "bun run bin/print-words.ts",
+    "exec:deploy": "bun run bin/update-words.ts",
+    "predeploy": "npm run exec:deploy",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
