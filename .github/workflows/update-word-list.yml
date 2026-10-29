@@ -1,0 +1,72 @@
+# Daily word-list generator.
+name: Update word list
+
+on:
+  schedule:
+    # ~06:15 UTC daily. GitHub may delay scheduled runs during high load,
+    # so treat this as "roughly once a day".
+    - cron: "15 6 * * *"
+  workflow_dispatch: {}   # allow manual runs from the Actions tab
+
+permissions:
+  contents: write         # let the built-in token push the commit
+
+# Avoid overlapping runs if a scheduled and manual run coincide.
+concurrency:
+  group: update-word-list
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout wordle-words
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+
+      - name: Generate word list
+        # `uvx --from <source> <command>` is the npx-equivalent: fetch the
+        # package into a throwaway env and run its CLI. Pin a tag/ref after the
+        # URL (e.g. @v0.1.0) once you cut releases of wordontwords.
+        run: |
+          uvx --from git+https://github.com/eacaps/wordontwords \
+            wordontwords --output word-list.json
+
+      - name: Validate word list
+        # Guard against a soft failure where uvx exits 0 but writes nothing
+        # useful. Blocks the commit/publish steps if the output is missing,
+        # empty, or not valid JSON.
+        run: |
+          test -s word-list.json || { echo "word-list.json missing or empty"; exit 1; }
+          jq empty word-list.json || { echo "word-list.json is not valid JSON"; exit 1; }
+
+      - name: Commit word list if it changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- word-list.json; then
+            echo "No changes to word-list.json; nothing to commit."
+          else
+            git add word-list.json
+            git commit -m "chore: update word list ($(date -u +%Y-%m-%d))"
+            git push
+          fi
+
+      # TEMPORARY: bridge until GitHub Pages is switched to serve from the
+      # root of `main`. Until then, publish word-list.json to the root of the
+      # gh-pages branch so the existing URL
+      # (https://<user>.github.io/wordle-words/word-list.json) keeps working.
+      # Once Pages serves from main, delete the two steps below.
+      - name: Stage files for gh-pages
+        run: |
+          mkdir -p _site
+          cp word-list.json _site/word-list.json
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
