@@ -46,7 +46,9 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- word-list.json; then
+          # `git diff` ignores untracked files, so use `git status` to also
+          # catch the first run when word-list.json isn't tracked yet.
+          if [ -z "$(git status --porcelain -- word-list.json)" ]; then
             echo "No changes to word-list.json; nothing to commit."
           else
             git add word-list.json
