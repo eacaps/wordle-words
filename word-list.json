@@ -361,6 +361,7 @@
     "CLOSE",
     "CLOTH",
     "CLOUD",
+    "CLOUT",
     "CLOVE",
     "CLOWN",
     "CLUCK",
@@ -1953,5 +1954,5 @@
     "ZEBRA",
     "ZESTY"
   ],
-  "lastUpdated": "2026-11-18"
+  "lastUpdated": "2026-11-19"
 }
